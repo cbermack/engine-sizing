@@ -1,5 +1,5 @@
 % Bell Nozzle Angles Interpolation
-% Chris Bermack
+% Author: Chris Bermack
 
 %% angle splines
 % eyeballing theta values for certain expansion ratios from 
