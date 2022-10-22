@@ -1,36 +1,26 @@
-% Bell Nozzle Angles Interpolation
+% Bell Nozzle Angles Spline Interpolation
 % Author: Chris Bermack
+% nozzle throat and exit angles for 80% bell curve nozzle
+% input: expRatioInput (nozzle expansion ratio) to 2 decimal places,
+% between 4 and 30
+% output: thetaNout (nozzle angle near throat), thetaEout (nozzle exit 
+% angle), both in degrees
 
-%% angle splines
-% eyeballing theta values for certain expansion ratios from 
-% http://www.aspirespace.org.uk/downloads/Thrust%20optimised%20parabolic%20nozzle.pdf
+function [thetaNout, thetaEout] = bellAngleSpline(expRatioInput)
+%% theta outputs for expansion ratio input
 expRatio = [4 5 6 7 8 9 10 20 30];
 thetaN = [21.7 23.0 23.9 24.7 25.3 25.9 26.3 28.7 30.1];
 thetaE = [14.0 12.9 12.0 11.5 11.1 10.7 10.4 9.0 8.4];
 
 expRatio2 = 4:0.01:30; % finer expansion ratio for spline interpolation
 
-% spline of theta values from previous points
+% spline of theta values
 thetaNspline = spline(expRatio,thetaN,expRatio2);
 thetaEspline = spline(expRatio,thetaE,expRatio2);
 
-% plot
-semilogx(expRatio2,thetaNspline,'r-');
-hold on;
-grid on;
-semilogx(expRatio2,thetaEspline,'b-');
-semilogx(expRatio,thetaN,'ro');
-semilogx(expRatio,thetaE,'bo');
-hold off;
-title('Nozzle Contour Angles');
-xlabel('Expansion Ratio');
-ylabel('\theta [deg]');
-legend('\theta_n','\theta_e','location','best');
-
-%% theta outputs for expansion ratio input
-expRatioInput = input('Expansion Ratio: ');
+% for loop to check input against expansion ratios
 m = 1;
-for n = 4:0.1:30
+for n = 4:0.01:30
     if expRatioInput == n
         break
     end
@@ -38,5 +28,26 @@ for n = 4:0.1:30
 end
 thetaNout = thetaNspline(m);
 thetaEout = thetaEspline(m);
-fprintf('thetaN = %.1f\n',thetaNout);
-fprintf('thetaE = %.1f\n',thetaEout);
+% fprintf('thetaN = %.2f deg\n',thetaNout);
+% fprintf('thetaE = %.2f deg\n',thetaEout);
+
+%% angle splines
+% eyeballing theta values for certain expansion ratios from 
+% http://www.aspirespace.org.uk/downloads/Thrust%20optimised%20parabolic%20nozzle.pdf
+% plot
+plotInput = input('Do you want a plot of \theta? [Y/N]: ','s');
+if plotInput == 'Y'
+    semilogx(expRatio2,thetaNspline,'r-');
+    hold on;
+    grid on;
+    semilogx(expRatio2,thetaEspline,'b-');
+    semilogx(expRatio,thetaN,'ro');
+    semilogx(expRatio,thetaE,'bo');
+    hold off;
+    title('Nozzle Contour Angles');
+    xlabel('Expansion Ratio');
+    ylabel('\theta [deg]');
+    legend('\theta_n','\theta_e','location','best');
+end
+
+end
